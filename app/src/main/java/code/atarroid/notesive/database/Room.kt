@@ -13,9 +13,9 @@ interface NoteDao {
     suspend fun update(note: NoteEntry)
 }
 
-@Database(entities = [NoteEntry::class], version = 1)
+@Database(entities = [NoteEntry::class], version = 1, exportSchema = false)
 abstract class NotesDatabase: RoomDatabase() {
-    abstract val NoteDao: NoteDao
+    abstract val noteDao: NoteDao
 }
 
 private lateinit var INSTANCE: NotesDatabase
@@ -23,7 +23,9 @@ private lateinit var INSTANCE: NotesDatabase
 fun getDatabase(context: Context): NotesDatabase {
     synchronized(NotesDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
-            INSTANCE = Room.databaseBuilder(context.applicationContext, NotesDatabase::class.java, "notes").build()
+            INSTANCE = Room.databaseBuilder(context.applicationContext, NotesDatabase::class.java, "notes")
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
     return INSTANCE

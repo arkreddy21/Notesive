@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/favsFragment">
+
+    <fragment
+        android:id="@+id/foldersFragment"
+        android:name="code.atarroid.notesive.FoldersFragment"
+        android:label="FoldersFragment" >
+        <action
+            android:id="@+id/action_foldersFragment_to_favsFragment"
+            app:destination="@id/favsFragment" />
+        <action
+            android:id="@+id/action_foldersFragment_to_notesFragment"
+            app:destination="@id/notesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favsFragment"
+        android:name="code.atarroid.notesive.FavsFragment"
+        android:label="FavsFragment" >
+        <action
+            android:id="@+id/action_favsFragment_to_foldersFragment"
+            app:destination="@id/foldersFragment" />
+        <action
+            android:id="@+id/action_favsFragment_to_editEntryFragment"
+            app:destination="@id/editEntryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editEntryFragment"
+        android:name="code.atarroid.notesive.EditEntryFragment"
+        android:label="EditEntryFragment" />
+    <fragment
+        android:id="@+id/notesFragment"
+        android:name="code.atarroid.notesive.NotesFragment"
+        android:label="fragment_notes"
+        tools:layout="@layout/fragment_notes" >
+        <action
+            android:id="@+id/action_notesFragment_to_editEntryFragment"
+            app:destination="@id/editEntryFragment" />
+    </fragment>
+</navigation>
