@@ -13,7 +13,7 @@ interface NoteDao {
     suspend fun update(note: NoteEntry)
 }
 
-@Database(entities = [NoteEntry::class], version = 1, exportSchema = false)
+@Database(entities = [NoteEntry::class, Tag::class, Folder::class], version = 1, exportSchema = false)
 abstract class NotesDatabase: RoomDatabase() {
     abstract val noteDao: NoteDao
 }
