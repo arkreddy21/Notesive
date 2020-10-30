@@ -24,7 +24,7 @@ data class Tag(
 
 @Entity(tableName = "folders_table")
 data class Folder(
-        @PrimaryKey(autoGenerate = true) var folderId: Long = 0,
+        @PrimaryKey(autoGenerate = true) var folderId: Long = 0L,
         var folder: String
 )
 

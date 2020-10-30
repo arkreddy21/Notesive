@@ -1,18 +1,23 @@
 package code.atarroid.notesive
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import code.atarroid.notesive.database.Folder
-import java.util.*
+
 
 class FolderRecAdapter: RecyclerView.Adapter<FolderRecAdapter.ViewHolder>() {
 
-    var one = Folder(folder="one"); var two = Folder(folder="two")
-    private var folders = listOf<Folder>(one, two)
+//    var one = Folder(folder="one"); var two = Folder(folder="two")
+//    private var folders = listOf<Folder>(one, two)
+
+    var folders =  listOf<Folder>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -24,10 +29,6 @@ class FolderRecAdapter: RecyclerView.Adapter<FolderRecAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = folders.size
 
-    fun setFolders(inFolders: List<Folder>) {
-        folders = inFolders
-        notifyDataSetChanged()
-    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var foldName: TextView = itemView.findViewById(R.id.foldName)

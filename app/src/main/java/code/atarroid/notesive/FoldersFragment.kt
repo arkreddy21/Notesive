@@ -1,17 +1,23 @@
 package code.atarroid.notesive
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import code.atarroid.notesive.database.Folder
 import code.atarroid.notesive.database.NotesDatabase
 import code.atarroid.notesive.databinding.FragmentFoldersBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.launch
 
 
 /**
@@ -22,12 +28,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 class FoldersFragment : Fragment() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
-    //private val application = requireNotNull(this.activity).application
-    //private val dataSource = NotesDatabase.getDatabase(application).noteDao
-    //private val folders = dataSource.getAllFolders()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<FragmentFoldersBinding>(inflater, R.layout.fragment_folders,container,false)
+        val binding = DataBindingUtil.inflate<FragmentFoldersBinding>(inflater, R.layout.fragment_folders, container, false)
+
+        val application = requireNotNull(this.activity).application
+        val dataSource = NotesDatabase.getDatabase(application).noteDao
+
 
         binding.topAppBar2.setOnClickListener {
             findNavController().navigate(R.id.action_foldersFragment_to_favsFragment)
@@ -43,17 +50,41 @@ class FoldersFragment : Fragment() {
                 else
                     BottomSheetBehavior.STATE_EXPANDED
             bottomSheetBehavior.state = state
+            binding.edtNewFolder.requestFocus()
+            //val imm: InputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            //imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
 
         val adapter = FolderRecAdapter()
         binding.foldersRecView.adapter = adapter
 
-//        binding.btnSaveFolder.setOnClickListener{
-//            val newText: String = binding.edtNewFolder.text.toString()
-//            val newFolder = Folder(folder = newText)
-//            dataSource.insertFolder(newFolder)
-//            adapter.setFolders(folders)
-//        }
+
+        val insertDb = { newFolder: Folder ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                dataSource.insertFolder(newFolder)
+            }
+        }
+
+        binding.btnSaveFolder.setOnClickListener{
+            if (!TextUtils.isEmpty(binding.edtNewFolder.text.toString())) {
+                val newText: String = binding.edtNewFolder.text.toString()
+                val newFolder = Folder(folder = newText)
+                binding.edtNewFolder.text = null
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                insertDb(newFolder)
+            }else
+                Toast.makeText(application, "fill the folder name", Toast.LENGTH_SHORT).show()
+
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val folders = dataSource.getAllFolders()
+            folders.observe(viewLifecycleOwner, {
+                it?.let {
+                    adapter.folders = it
+                }
+            })
+        }
 
         return binding.root
     }

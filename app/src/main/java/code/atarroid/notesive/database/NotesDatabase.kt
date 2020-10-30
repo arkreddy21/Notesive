@@ -11,13 +11,13 @@ interface NoteDao {
     fun insertNote(note: NoteEntry)
 
     @Insert(entity = Folder::class)
-    fun insertFolder(folder: Folder)
+    suspend fun insertFolder(folder: Folder)
 
     @Update
     fun update(note: NoteEntry)
 
     @Query("SELECT * FROM folders_table")
-    fun getAllFolders(): List<Folder>
+    fun getAllFolders(): LiveData<List<Folder>>
 }
 
 @Database(entities = [NoteEntry::class, Tag::class, Folder::class], version = 1, exportSchema = false)
@@ -25,16 +25,20 @@ abstract class NotesDatabase: RoomDatabase() {
     abstract val noteDao: NoteDao
 
     companion object {
-        private lateinit var INSTANCE: NotesDatabase
+        @Volatile
+        private var INSTANCE: NotesDatabase? = null
+
         fun getDatabase(context: Context): NotesDatabase {
-            synchronized(NotesDatabase::class.java) {
-                if (!::INSTANCE.isInitialized) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, NotesDatabase::class.java, "notes")
+            synchronized(this) {
+                var instance = INSTANCE
+                if (instance == null) {
+                    instance = Room.databaseBuilder(context.applicationContext, NotesDatabase::class.java, "notes")
                             .fallbackToDestructiveMigration()
                             .build()
+                    INSTANCE = instance
                 }
+                return instance
             }
-            return INSTANCE
         }
 
     }

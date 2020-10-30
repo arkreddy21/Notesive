@@ -75,10 +75,13 @@
             android:paddingBottom="32dp"
             app:behavior_hideable="true"
             app:behavior_peekHeight="0dp"
+            android:background="@color/primary3"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <EditText
                 android:id="@+id/edtNewFolder"
+                android:focusableInTouchMode="true"
+                android:windowSoftInputMode="stateVisible|adjustResize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
