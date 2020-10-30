@@ -1,5 +1,6 @@
 package code.atarroid.notesive
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -51,8 +53,6 @@ class FoldersFragment : Fragment() {
                     BottomSheetBehavior.STATE_EXPANDED
             bottomSheetBehavior.state = state
             binding.edtNewFolder.requestFocus()
-            //val imm: InputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            //imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
 
         val adapter = FolderRecAdapter()
@@ -67,10 +67,11 @@ class FoldersFragment : Fragment() {
 
         binding.btnSaveFolder.setOnClickListener{
             if (!TextUtils.isEmpty(binding.edtNewFolder.text.toString())) {
+                view?.let { activity?.hideKeyboard(it) }
                 val newText: String = binding.edtNewFolder.text.toString()
                 val newFolder = Folder(folder = newText)
                 binding.edtNewFolder.text = null
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 insertDb(newFolder)
             }else
                 Toast.makeText(application, "fill the folder name", Toast.LENGTH_SHORT).show()
@@ -89,4 +90,14 @@ class FoldersFragment : Fragment() {
         return binding.root
     }
 
+}
+
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(currentFocus ?: View(this))
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

@@ -30,7 +30,14 @@
     <fragment
         android:id="@+id/editEntryFragment"
         android:name="code.atarroid.notesive.EditEntryFragment"
-        android:label="EditEntryFragment" />
+        android:label="EditEntryFragment" >
+        <argument
+            android:name="folderId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_editEntryFragment_to_notesFragment"
+            app:destination="@id/notesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/notesFragment"
         android:name="code.atarroid.notesive.NotesFragment"
@@ -39,5 +46,11 @@
         <action
             android:id="@+id/action_notesFragment_to_editEntryFragment"
             app:destination="@id/editEntryFragment" />
+        <argument
+            android:name="folderId"
+            app:argType="long" />
+        <argument
+            android:name="folderName"
+            app:argType="string" />
     </fragment>
 </navigation>

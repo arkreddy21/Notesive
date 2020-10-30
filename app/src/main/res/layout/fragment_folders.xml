@@ -82,6 +82,7 @@
                 android:id="@+id/edtNewFolder"
                 android:focusableInTouchMode="true"
                 android:windowSoftInputMode="stateVisible|adjustResize"
+                android:imeOptions="actionDone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

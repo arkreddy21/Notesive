@@ -8,11 +8,11 @@ import androidx.room.Relation
 
 @Entity(tableName = "notes_table")
 data class NoteEntry(
-        @PrimaryKey(autoGenerate = true) var noteId: Long,
-        var parentTagId: Long,
-        var ParentFolderId: Long,
-        var title: String?,
-        var content: String?,
+        @PrimaryKey(autoGenerate = true) var noteId: Long = 0L,
+        var parentTagId: Long = 0L,
+        var parentFolderId: Long,
+        var title: String? = "",
+        var content: String? = "",
 )
 
 @Entity(tableName = "tags_table")

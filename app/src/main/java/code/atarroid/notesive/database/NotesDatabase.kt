@@ -8,7 +8,7 @@ import androidx.room.*
 @Dao
 interface NoteDao {
     @Insert(entity = NoteEntry::class)
-    fun insertNote(note: NoteEntry)
+    suspend fun insertNote(note: NoteEntry)
 
     @Insert(entity = Folder::class)
     suspend fun insertFolder(folder: Folder)
@@ -18,7 +18,14 @@ interface NoteDao {
 
     @Query("SELECT * FROM folders_table")
     fun getAllFolders(): LiveData<List<Folder>>
+
+    @Query("SELECT * FROM folders_table WHERE folderId = :key")
+    fun getFolder(key: Long): Folder
+
+    @Query("SELECT * FROM notes_table WHERE parentFolderId = :key")
+    fun getNotes(key: Long): LiveData<List<NoteEntry>>
 }
+
 
 @Database(entities = [NoteEntry::class, Tag::class, Folder::class], version = 1, exportSchema = false)
 abstract class NotesDatabase: RoomDatabase() {

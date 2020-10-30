@@ -14,18 +14,24 @@
             android:orientation="vertical">
 
             <EditText
+                android:id="@+id/titleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/titleTxt"
                 android:hint="title here"
                 android:inputType="textMultiLine"/>
 
             <EditText
+                android:id="@+id/noteTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/NoteTxt"
                 android:hint="content here"
                 android:inputType="textMultiLine"/>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:text="save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
