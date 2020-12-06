@@ -22,6 +22,12 @@ interface NoteDao {
     @Query("SELECT * FROM folders_table WHERE folderId = :key")
     fun getFolder(key: Long): Folder
 
+    @Query("SELECT * FROM tags_table WHERE parentFolderId = :key")
+    fun getTags(key: Long): LiveData<List<Tag>>
+
+    @Query("SELECT * FROM notes_table WHERE parentTagId = :key")
+    fun getTaggedNotes(key: Long): List<NoteEntry>
+
     @Query("SELECT * FROM notes_table WHERE parentFolderId = :key")
     fun getNotes(key: Long): LiveData<List<NoteEntry>>
 }

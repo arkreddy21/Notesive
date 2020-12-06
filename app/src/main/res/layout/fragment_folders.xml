@@ -12,46 +12,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appBar"
+            <TextView
+                android:id="@+id/appName"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/topAppBar1"
-                        style="@style/Widget.MaterialComponents.Toolbar.Primary"
-                        android:layout_width="0dp"
-                        android:layout_height="?attr/actionBarSize"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/topAppBar2"
-                        app:navigationIcon="@drawable/ic_menu"
-                        app:title="all folders" />
-
-                    <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/topAppBar2"
-                        style="@style/Widget.MaterialComponents.Toolbar.Primary"
-                        android:layout_width="0dp"
-                        android:layout_height="?attr/actionBarSize"
-                        app:menu="@menu/bottom_app_bar"
-                        app:title="all favs"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/topAppBar1"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </com.google.android.material.appbar.AppBarLayout>
+                android:layout_height="wrap_content"
+                android:text="Notesive"
+                style="@style/TextAppearance.AppCompat.Large"/>
             
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/foldersRecView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/appBar"
+                android:layout_below="@id/appName"
                 android:paddingTop="8dp"
                 android:paddingHorizontal="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
@@ -62,7 +36,7 @@
             android:id="@+id/btnNewFolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
+            app:layout_anchor="@id/bottomBar"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_add_block"/>
 
@@ -72,9 +46,10 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="32dp"
+            android:paddingBottom="90dp"
             app:behavior_hideable="true"
             app:behavior_peekHeight="0dp"
+            android:elevation="8dp"
             android:background="@color/primary3"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -93,6 +68,15 @@
                 android:text="save"/>
 
         </LinearLayout>
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomBar"
+            android:backgroundTint="@color/primary3"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_gravity="bottom"
+            app:menu="@menu/bottom_app_bar"
+            app:fabAlignmentMode="end"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

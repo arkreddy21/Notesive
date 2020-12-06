@@ -1,17 +1,21 @@
 package code.atarroid.notesive
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import code.atarroid.notesive.database.NoteEntry
 import code.atarroid.notesive.database.NotesDatabase
 import code.atarroid.notesive.databinding.FragmentEditEntryBinding
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
 
 /**
@@ -21,13 +25,18 @@ import kotlinx.coroutines.launch
  */
 class EditEntryFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<FragmentEditEntryBinding>(inflater, R.layout.fragment_edit_entry, container, false)
+    private lateinit var binding:FragmentEditEntryBinding
+
+    private lateinit var newTitle:String
+    private lateinit var newContent:String
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DataBindingUtil.inflate<FragmentEditEntryBinding>(inflater, R.layout.fragment_edit_entry, container, false)
 
         val application = requireNotNull(this.activity).application
         val dataSource = NotesDatabase.getDatabase(application).noteDao
+        val id = EditEntryFragmentArgs.fromBundle(requireArguments()).folderId
 
-        val id: Long = EditEntryFragmentArgs.fromBundle(requireArguments()).folderId
 
         val insertDb = {newTitle: String, newContent: String ->
             viewLifecycleOwner.lifecycleScope.launch {
@@ -44,10 +53,30 @@ class EditEntryFragment : Fragment() {
             insertDb(newTitle, newContent)
         }
 
-
         return binding.root
     }
 
+    override fun onStop() {
+        newTitle = binding.titleTxt.text.toString()
+        newContent = binding.noteTxt.text.toString()
+        Log.i("EditEntry", "title and content Called")
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
+        Log.i("EditEntry", "onDestroyView Called")
+        doThis()
+        super.onDestroyView()
+    }
+
+    private fun doThis() {
+        Log.i("EditEntry", "doThis Called")
+        val application = requireNotNull(this.activity).application
+        val dataSource = NotesDatabase.getDatabase(application).noteDao
+        val id = EditEntryFragmentArgs.fromBundle(requireArguments()).folderId
+        if(newTitle!=""&&newContent!=""){
+            ForDb.insDb(newTitle, newContent, id, dataSource)}
+    }
 
 
 }

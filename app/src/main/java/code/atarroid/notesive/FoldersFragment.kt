@@ -1,6 +1,5 @@
 package code.atarroid.notesive
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +29,7 @@ class FoldersFragment : Fragment() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<FragmentFoldersBinding>(inflater, R.layout.fragment_folders, container, false)
 
@@ -38,14 +37,17 @@ class FoldersFragment : Fragment() {
         val dataSource = NotesDatabase.getDatabase(application).noteDao
 
 
-        binding.topAppBar2.setOnClickListener {
-            findNavController().navigate(R.id.action_foldersFragment_to_favsFragment)
-        }
+//        binding.topAppBar2.setOnClickListener {
+//            findNavController().navigate(R.id.action_foldersFragment_to_favsFragment)
+//        }
+
+        
 
         // Initializing the BottomSheetBehavior
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         // Changing the BottomSheet State on ButtonClick
         binding.btnNewFolder.setOnClickListener {
+            binding.bottomSheet.visibility = View.VISIBLE
             val state =
                 if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                     BottomSheetBehavior.STATE_COLLAPSED
@@ -67,7 +69,9 @@ class FoldersFragment : Fragment() {
 
         binding.btnSaveFolder.setOnClickListener{
             if (!TextUtils.isEmpty(binding.edtNewFolder.text.toString())) {
-                view?.let { activity?.hideKeyboard(it) }
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view?.windowToken, 0)
+                binding.bottomSheet.visibility = View.GONE
                 val newText: String = binding.edtNewFolder.text.toString()
                 val newFolder = Folder(folder = newText)
                 binding.edtNewFolder.text = null
@@ -90,14 +94,4 @@ class FoldersFragment : Fragment() {
         return binding.root
     }
 
-}
-
-
-fun Activity.hideKeyboard() {
-    hideKeyboard(currentFocus ?: View(this))
-}
-
-fun Context.hideKeyboard(view: View) {
-    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

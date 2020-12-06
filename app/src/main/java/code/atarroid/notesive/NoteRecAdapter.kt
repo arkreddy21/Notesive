@@ -20,8 +20,8 @@ class NoteRecAdapter: RecyclerView.Adapter<NoteRecAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.txtTitle.text = notes[position].content
-        holder.txtContent.text = notes[position].title
+        holder.txtTitle.text = notes[position].title
+        holder.txtContent.text = notes[position].content
     }
 
     override fun getItemCount(): Int = notes.size

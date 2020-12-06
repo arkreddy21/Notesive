@@ -8,9 +8,12 @@
         android:title="search"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/more"
-        android:title="more"
-        app:showAsAction="never" />
+    <group>
+        <item
+            android:id="@+id/showFavs"
+            android:title="switch view"
+            app:showAsAction="always"/>
+    </group>
+
 
 </menu>
