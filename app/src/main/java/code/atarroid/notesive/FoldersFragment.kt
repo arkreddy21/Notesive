@@ -36,11 +36,6 @@ class FoldersFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val dataSource = NotesDatabase.getDatabase(application).noteDao
 
-
-//        binding.topAppBar2.setOnClickListener {
-//            findNavController().navigate(R.id.action_foldersFragment_to_favsFragment)
-//        }
-
         
 
         // Initializing the BottomSheetBehavior

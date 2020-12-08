@@ -10,7 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import code.atarroid.notesive.database.Folder
 
-
+//TODO: add header to recyclerview instead of textview for app name
 class FolderRecAdapter: RecyclerView.Adapter<FolderRecAdapter.ViewHolder>() {
 
 //    var one = Folder(folder="one"); var two = Folder(folder="two")

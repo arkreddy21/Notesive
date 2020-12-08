@@ -8,29 +8,32 @@
         android:orientation="vertical"
         tools:context=".FoldersFragment">
 
-        <RelativeLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/appName"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="8dp"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Notesive"
-                style="@style/TextAppearance.AppCompat.Large"/>
-            
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/foldersRecView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/appName"
-                android:paddingTop="8dp"
-                android:paddingHorizontal="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:title="@string/app_name"
+                android:background="@color/bg"/>
 
-        </RelativeLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/foldersRecView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/app_bar"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="?attr/actionBarSize"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnNewFolder"
@@ -73,9 +76,11 @@
             android:id="@+id/bottomBar"
             android:backgroundTint="@color/primary3"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
+            app:hideOnScroll="false"
             app:menu="@menu/bottom_app_bar"
+            app:fabCradleMargin="0dp"
             app:fabAlignmentMode="end"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

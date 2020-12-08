@@ -10,4 +10,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary2">#EDE7F6</color>
     <color name="primary3">#E0F7FA</color>
+
+    <color name="bg">#FFFFFF</color>
 </resources>

@@ -17,7 +17,7 @@ data class NoteEntry(
 
 @Entity(tableName = "tags_table")
 data class Tag(
-        @PrimaryKey(autoGenerate = true) var tagId: Long,
+        @PrimaryKey(autoGenerate = true) var tagId: Long = 0L,
         var parentFolderId: Long,
         var tag: String
 )

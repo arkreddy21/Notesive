@@ -10,6 +10,9 @@ interface NoteDao {
     @Insert(entity = NoteEntry::class)
     suspend fun insertNote(note: NoteEntry)
 
+    @Insert(entity = Tag::class)
+    suspend fun insertTag(tag: Tag)
+
     @Insert(entity = Folder::class)
     suspend fun insertFolder(folder: Folder)
 
