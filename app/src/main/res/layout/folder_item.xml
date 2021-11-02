@@ -6,6 +6,7 @@
     android:layout_height="50dp"
     android:background="@drawable/rounded_rect"
     android:layout_marginBottom="8dp"
+    android:clickable="true"
     xmlns:tools="http://schemas.android.com/tools">
 
     <TextView

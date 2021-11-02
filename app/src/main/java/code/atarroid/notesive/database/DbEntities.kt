@@ -9,15 +9,17 @@ import androidx.room.Relation
 @Entity(tableName = "notes_table")
 data class NoteEntry(
         @PrimaryKey(autoGenerate = true) var noteId: Long = 0L,
-        var parentTagId: Long = 0L,
+        var parentTagId: Int = -1,
+        var parentTagName: String = "untagged",
         var parentFolderId: Long,
+        var parentFolderName: String = "",
         var title: String? = "",
         var content: String? = "",
 )
 
 @Entity(tableName = "tags_table")
 data class Tag(
-        @PrimaryKey(autoGenerate = true) var tagId: Long = 0L,
+        @PrimaryKey(autoGenerate = true) var tagId: Int = 0,
         var parentFolderId: Long,
         var tag: String
 )

@@ -1,16 +1,18 @@
 package code.atarroid.notesive
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import code.atarroid.notesive.database.NoteDao
 import code.atarroid.notesive.database.NotesDatabase
 import code.atarroid.notesive.database.Tag
 import code.atarroid.notesive.databinding.FragmentNotesBinding
@@ -29,28 +31,34 @@ class NotesFragment : Fragment() {
 
     private lateinit var binding:FragmentNotesBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var dataSource: NoteDao
+    private lateinit var application: Application
+
+    var id: Long = 0L
+    private lateinit var name: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate<FragmentNotesBinding>(inflater, R.layout.fragment_notes, container, false)
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
 
-        val id: Long = NotesFragmentArgs.fromBundle(requireArguments()).folderId
-        val name: String = NotesFragmentArgs.fromBundle(requireArguments()).folderName
+        id = NotesFragmentArgs.fromBundle(requireArguments()).folderId
+        name = NotesFragmentArgs.fromBundle(requireArguments()).folderName
         binding.topAppBar.title = name
 
-        val application = requireNotNull(this.activity).application
-        val dataSource = NotesDatabase.getDatabase(application).noteDao
+        application = requireNotNull(this.activity).application
+        dataSource = NotesDatabase.getDatabase(application).noteDao
 
-        val adapter = NoteRecAdapter()
+        val adapter = NoteRecAdapter(dataSource)
         binding.notesRecView.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             val notes = dataSource.getNotes(id)
-            notes.observe(viewLifecycleOwner, {
-                it?.let {
-                    adapter.notes = it
-                }
-            })
+            notes.observe(viewLifecycleOwner, { it.let { adapter.notes = it } })
         }
 
 //        val oldTags = dataSource.getTags(id)
@@ -59,13 +67,11 @@ class NotesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             Log.i("NotesFrag", "lifecyclescope launched")
             val tags = dataSource.getTags(id)
-            tags.observe(viewLifecycleOwner, {
-                it?.let { addChips(it) }
-            })
+            tags.observe(viewLifecycleOwner, { it?.let { addChips(it) } })
         }
 
         binding.btnNewNote.setOnClickListener{ view: View ->
-            view.findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditEntryFragment(id))
+            view.findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditEntryFragment(id, name))
         }
 
         binding.addTag.setOnClickListener {
@@ -88,8 +94,6 @@ class NotesFragment : Fragment() {
 
 
     private fun addTag(text:String){
-        val application = requireNotNull(this.activity).application
-        val dataSource = NotesDatabase.getDatabase(application).noteDao
         val nTag = Tag(parentFolderId = NotesFragmentArgs.fromBundle(requireArguments()).folderId, tag = text)
         ForDb.addTag(nTag, dataSource)
     }
@@ -102,6 +106,7 @@ class NotesFragment : Fragment() {
             for (item in items) {
                 val mChip = this.layoutInflater.inflate(R.layout.chip_item, null, false) as Chip
                 mChip.text = item.tag
+                mChip.id = item.tagId
                 binding.tagChipGroup.addView(mChip, binding.tagChipGroup.childCount-1)
             }
         }
@@ -118,5 +123,20 @@ class NotesFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.contextual_app_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.delete -> {
+                Toast.makeText(application, "delete folder", Toast.LENGTH_SHORT)
+                ForDb.deleteFolder(id, dataSource)
+                findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToFoldersFragment())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }

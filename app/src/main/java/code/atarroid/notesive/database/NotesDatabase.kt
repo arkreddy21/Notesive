@@ -10,14 +10,14 @@ interface NoteDao {
     @Insert(entity = NoteEntry::class)
     suspend fun insertNote(note: NoteEntry)
 
+    @Update(entity = NoteEntry::class)
+    suspend fun updateNote(note: NoteEntry)
+
     @Insert(entity = Tag::class)
     suspend fun insertTag(tag: Tag)
 
     @Insert(entity = Folder::class)
     suspend fun insertFolder(folder: Folder)
-
-    @Update
-    fun update(note: NoteEntry)
 
     @Query("SELECT * FROM folders_table")
     fun getAllFolders(): LiveData<List<Folder>>
@@ -28,11 +28,26 @@ interface NoteDao {
     @Query("SELECT * FROM tags_table WHERE parentFolderId = :key")
     fun getTags(key: Long): LiveData<List<Tag>>
 
+    @Query("SELECT * FROM tags_table WHERE tagId = :id")
+    suspend fun getTag(id: Int): Tag
+
     @Query("SELECT * FROM notes_table WHERE parentTagId = :key")
     fun getTaggedNotes(key: Long): List<NoteEntry>
 
     @Query("SELECT * FROM notes_table WHERE parentFolderId = :key")
     fun getNotes(key: Long): LiveData<List<NoteEntry>>
+
+    @Query("SELECT * FROM notes_table WHERE noteId = :noteId")
+    suspend fun getNote(noteId: Long): NoteEntry
+
+    @Query("DELETE FROM folders_table WHERE folderId = :id")
+    suspend fun delFolder(id: Long)
+
+    @Query("DELETE FROM notes_table WHERE parentFolderId = :id")
+    suspend fun delNotes(id: Long)
+
+    @Query("DELETE FROM tags_table WHERE parentFolderId = :id")
+    suspend fun delTags(id: Long)
 }
 
 

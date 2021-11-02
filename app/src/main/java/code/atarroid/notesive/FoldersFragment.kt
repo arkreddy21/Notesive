@@ -3,16 +3,13 @@ package code.atarroid.notesive
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import code.atarroid.notesive.database.Folder
 import code.atarroid.notesive.database.NotesDatabase
 import code.atarroid.notesive.databinding.FragmentFoldersBinding
@@ -52,7 +49,7 @@ class FoldersFragment : Fragment() {
             binding.edtNewFolder.requestFocus()
         }
 
-        val adapter = FolderRecAdapter()
+        val adapter = FolderRecAdapter(this.requireActivity())
         binding.foldersRecView.adapter = adapter
 
 
@@ -85,6 +82,7 @@ class FoldersFragment : Fragment() {
                 }
             })
         }
+
 
         return binding.root
     }
