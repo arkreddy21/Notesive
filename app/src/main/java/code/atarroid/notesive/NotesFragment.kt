@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -48,10 +49,26 @@ class NotesFragment : Fragment() {
 
         id = NotesFragmentArgs.fromBundle(requireArguments()).folderId
         name = NotesFragmentArgs.fromBundle(requireArguments()).folderName
-        binding.topAppBar.title = name
+        binding.topAppBarNotes.title = name
 
         application = requireNotNull(this.activity).application
         dataSource = NotesDatabase.getDatabase(application).noteDao
+
+        //binding.topAppBarNotes.inflateMenu(R.menu.contextual_app_bar)
+        binding.topAppBarNotes.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.delete -> {
+                    Log.i("NotesFrag", "menu item click listener launched")
+                    Toast.makeText(application, "deleted folder", Toast.LENGTH_SHORT).show()
+                    ForDb.deleteFolder(id, dataSource)
+                    //findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToFoldersFragment())
+                    activity?.onBackPressed()
+                    true
+                }
+                else -> false
+            }
+        }
+
 
         val adapter = NoteRecAdapter(dataSource)
         binding.notesRecView.adapter = adapter
@@ -60,9 +77,6 @@ class NotesFragment : Fragment() {
             val notes = dataSource.getNotes(id)
             notes.observe(viewLifecycleOwner, { it.let { adapter.notes = it } })
         }
-
-//        val oldTags = dataSource.getTags(id)
-//        oldTags.value?.let { addChips(it) }
 
         viewLifecycleOwner.lifecycleScope.launch {
             Log.i("NotesFrag", "lifecyclescope launched")
@@ -123,20 +137,4 @@ class NotesFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.contextual_app_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
-            R.id.delete -> {
-                Toast.makeText(application, "delete folder", Toast.LENGTH_SHORT)
-                ForDb.deleteFolder(id, dataSource)
-                findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToFoldersFragment())
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 }

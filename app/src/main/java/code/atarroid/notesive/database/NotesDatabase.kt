@@ -40,6 +40,12 @@ interface NoteDao {
     @Query("SELECT * FROM notes_table WHERE noteId = :noteId")
     suspend fun getNote(noteId: Long): NoteEntry
 
+    @Query("DELETE FROM notes_table WHERE noteId = :id")
+    suspend fun delNote(id: Long)
+
+    @Query("DELETE FROM tags_table WHERE tagId = :id")
+    suspend fun delTag(id: Long)
+
     @Query("DELETE FROM folders_table WHERE folderId = :id")
     suspend fun delFolder(id: Long)
 

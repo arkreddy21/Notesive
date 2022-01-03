@@ -1,14 +1,10 @@
 package code.atarroid.notesive
 
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import code.atarroid.notesive.database.NoteDao
 import code.atarroid.notesive.database.NoteEntry
-import code.atarroid.notesive.database.NotesDatabase
 import code.atarroid.notesive.database.Tag
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 object ForDb {
 
@@ -75,6 +71,12 @@ object ForDb {
             dataSource.delFolder(id)
             dataSource.delTags(id)
             dataSource.delNotes(id)
+        }
+    }
+
+    fun deleteNote(id: Long, dataSource: NoteDao) {
+        GlobalScope.launch {
+            dataSource.delNote(id)
         }
     }
 

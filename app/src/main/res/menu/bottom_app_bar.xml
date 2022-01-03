@@ -7,13 +7,13 @@
         android:icon="@drawable/ic_search"
         android:title="search"
         app:showAsAction="ifRoom" />
-
+    <!--
     <group>
         <item
             android:id="@+id/showFavs"
             android:title="switch view"
             app:showAsAction="always"/>
     </group>
-
+    -->
 
 </menu>

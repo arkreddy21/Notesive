@@ -1,5 +1,6 @@
 package code.atarroid.notesive
 
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +10,12 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import code.atarroid.notesive.database.NoteDao
 import code.atarroid.notesive.database.NoteEntry
 import code.atarroid.notesive.database.NotesDatabase
 import code.atarroid.notesive.database.Tag
@@ -30,21 +34,52 @@ class EditEntryFragment : Fragment() {
 
     private lateinit var binding: FragmentEditEntryBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var dataSource: NoteDao
+    private lateinit var application: Application
+
+    var id: Long = 0L
+    var noteId: Long = 0L
+    private lateinit var folderName: String
 
     private lateinit var newTitle: String
     private lateinit var newContent: String
     private var newTagId:Int = 0
+
+    var delflag = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate<FragmentEditEntryBinding>(inflater, R.layout.fragment_edit_entry, container, false)
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
 
-        val application = requireNotNull(this.activity).application
-        val dataSource = NotesDatabase.getDatabase(application).noteDao
-        val id = EditEntryFragmentArgs.fromBundle(requireArguments()).folderId
-        val noteId = EditEntryFragmentArgs.fromBundle(requireArguments()).noteId
-        binding.topAppBar.title = EditEntryFragmentArgs.fromBundle(requireArguments()).folderName
+        application = requireNotNull(this.activity).application
+        dataSource = NotesDatabase.getDatabase(application).noteDao
+        id = EditEntryFragmentArgs.fromBundle(requireArguments()).folderId
+        noteId = EditEntryFragmentArgs.fromBundle(requireArguments()).noteId
+        folderName = EditEntryFragmentArgs.fromBundle(requireArguments()).folderName
+        binding.topAppBarEdit.title = folderName
+
+        binding.topAppBarEdit.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.delete -> {
+                    Log.i("EditEntryFrag", "menu item click listener launched for edit entry")
+                    Toast.makeText(application, "deleted note", Toast.LENGTH_SHORT).show()
+                    delflag = 1
+                    if (noteId == 0L) { }
+                    else { ForDb.deleteNote(noteId, dataSource)}
+                    //super.onDestroyView()
+                    //findNavController().navigate(EditEntryFragmentDirections.actionEditEntryFragmentToNotesFragment(id, folderName))
+                    activity?.onBackPressed()
+                    true
+                }
+                else -> false
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             Log.i("EditEntry", "lifecyclescope launched")
@@ -128,12 +163,17 @@ class EditEntryFragment : Fragment() {
         Log.i("EditEntry", "onDestroyView Called")
         val application = requireNotNull(this.activity).application
         val dataSource = NotesDatabase.getDatabase(application).noteDao
-        if(EditEntryFragmentArgs.fromBundle(requireArguments()).noteId == 0L){
+
+        if(delflag == 1){
+
+        }
+        else if(EditEntryFragmentArgs.fromBundle(requireArguments()).noteId == 0L){
             val id = EditEntryFragmentArgs.fromBundle(requireArguments()).folderId
             if (newTitle != "" && newContent != "") {
                 ForDb.insDb(newTitle, newContent, newTagId, id, dataSource)
             }
-        }else{
+        }
+        else{
             val noteId = EditEntryFragmentArgs.fromBundle(requireArguments()).noteId
             if (newTitle != "" && newContent != "") {
                 ForDb.updateNote(noteId, newTitle, newContent, newTagId, dataSource)

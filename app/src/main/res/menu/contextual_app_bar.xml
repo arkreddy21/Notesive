@@ -7,5 +7,12 @@
         android:icon="@drawable/ic_delete"
         android:title="delete"
         app:showAsAction="ifRoom" />
+    <!--
+    <item
+        android:id="@+id/back"
+        android:icon="@drawable/ic_arrow_back"
+        android:title="back"
+        app:showAsAction="ifRoom"/>
+    -->
 
 </menu>
