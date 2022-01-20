@@ -3,23 +3,23 @@ package code.atarroid.notesive
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import code.atarroid.notesive.database.NoteDao
+import code.atarroid.notesive.database.NoteEntry
 import code.atarroid.notesive.database.NotesDatabase
 import code.atarroid.notesive.database.Tag
 import code.atarroid.notesive.databinding.FragmentNotesBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 
 
@@ -34,6 +34,9 @@ class NotesFragment : Fragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var dataSource: NoteDao
     private lateinit var application: Application
+
+    private lateinit var notes: MutableLiveData<List<NoteEntry>>
+    private lateinit var adapter: NoteRecAdapter
 
     var id: Long = 0L
     private lateinit var name: String
@@ -54,7 +57,7 @@ class NotesFragment : Fragment() {
         application = requireNotNull(this.activity).application
         dataSource = NotesDatabase.getDatabase(application).noteDao
 
-        //binding.topAppBarNotes.inflateMenu(R.menu.contextual_app_bar)
+        //delete button
         binding.topAppBarNotes.setOnMenuItemClickListener {
             when(it.itemId) {
                 R.id.delete -> {
@@ -70,38 +73,53 @@ class NotesFragment : Fragment() {
         }
 
 
-        val adapter = NoteRecAdapter(dataSource)
-        binding.notesRecView.adapter = adapter
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            val notes = dataSource.getNotes(id)
-            notes.observe(viewLifecycleOwner, { it.let { adapter.notes = it } })
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             Log.i("NotesFrag", "lifecyclescope launched")
             val tags = dataSource.getTags(id)
             tags.observe(viewLifecycleOwner, { it?.let { addChips(it) } })
         }
 
+        binding.btnSaveTag.setOnClickListener{view: View ->
+            addTag(binding.edtNewTag.text.toString())
+        }
+
         binding.btnNewNote.setOnClickListener{ view: View ->
             view.findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditEntryFragment(id, name))
         }
 
+
+        adapter = NoteRecAdapter(dataSource)
+        binding.notesRecView.adapter = adapter
+
+
+        notes = dataSource.getNotes(id).toMutableLiveData()
+        viewLifecycleOwner.lifecycleScope.launch {
+            notes.observe(viewLifecycleOwner, { it.let { adapter.notes = it } })
+        }
+
+
         binding.addTag.setOnClickListener {
             binding.bottomSheet.visibility = View.VISIBLE
             val state =
-                    if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-                        BottomSheetBehavior.STATE_COLLAPSED
-                    else
-                        BottomSheetBehavior.STATE_EXPANDED
+                if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
+                    BottomSheetBehavior.STATE_COLLAPSED
+                else
+                    BottomSheetBehavior.STATE_EXPANDED
             bottomSheetBehavior.state = state
             binding.edtNewTag.requestFocus()
         }
 
-        binding.btnSaveTag.setOnClickListener{view: View ->
-            addTag(binding.edtNewTag.text.toString())
+        binding.chipAll.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                notes.value = ForDb.dbGetNotesList(id, dataSource)
+            }
         }
+        binding.chipUntagged.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                notes.value = ForDb.dbTaggedNotes(-1, id, dataSource)
+            }
+        }
+
 
         return binding.root
     }
@@ -121,20 +139,32 @@ class NotesFragment : Fragment() {
                 val mChip = this.layoutInflater.inflate(R.layout.chip_item, null, false) as Chip
                 mChip.text = item.tag
                 mChip.id = item.tagId
+                mChip.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (buttonView.isChecked) {
+                        tagChecker(mChip.id)
+                    }
+                }
                 binding.tagChipGroup.addView(mChip, binding.tagChipGroup.childCount-1)
             }
         }
     }
 
-    private fun addnewChip(items: List<Tag>) {
-        if(items.isNotEmpty()){
-            val mChip = this.layoutInflater.inflate(R.layout.chip_item, null, false) as Chip
-            mChip.text = items[items.size-1].tag
-            //val paddingDp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f, resources.displayMetrics).toInt()
-            //mChip.setPadding(paddingDp, 0, paddingDp, 0)
-            //mChip.setOnCheckedChangeListener { compoundButton, b -> }
-            binding.tagChipGroup.addView(mChip, binding.tagChipGroup.childCount-1)
+    private fun tagChecker(cid: Int) {
+        //Toast.makeText(application, "chip $cid selected", Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            notes.value = ForDb.dbTaggedNotes(cid, id, dataSource)
         }
     }
+
+
+    fun <T> LiveData<T>.toMutableLiveData(): MutableLiveData<T> {
+        val mediatorLiveData = MediatorLiveData<T>()
+        mediatorLiveData.addSource(this) {
+            mediatorLiveData.value = it
+        }
+        return mediatorLiveData
+    }
+
+
 
 }

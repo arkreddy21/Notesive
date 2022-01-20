@@ -31,11 +31,14 @@ interface NoteDao {
     @Query("SELECT * FROM tags_table WHERE tagId = :id")
     suspend fun getTag(id: Int): Tag
 
-    @Query("SELECT * FROM notes_table WHERE parentTagId = :key")
-    fun getTaggedNotes(key: Long): List<NoteEntry>
+    @Query("SELECT * FROM notes_table WHERE parentTagId = :key AND parentFolderId = :id")
+    fun getTaggedNotes(key: Int, id: Long): List<NoteEntry>
 
     @Query("SELECT * FROM notes_table WHERE parentFolderId = :key")
     fun getNotes(key: Long): LiveData<List<NoteEntry>>
+
+    @Query("SELECT * FROM notes_table WHERE parentFolderId = :key")
+    fun getNotesList(key: Long): List<NoteEntry>
 
     @Query("SELECT * FROM notes_table WHERE noteId = :noteId")
     suspend fun getNote(noteId: Long): NoteEntry

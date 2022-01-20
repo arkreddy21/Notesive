@@ -13,11 +13,15 @@
         android:id="@+id/txtTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text = "tag"/>
+        android:background="@drawable/rounded_rect"
+        android:backgroundTint="@color/primary3"
+        android:paddingHorizontal="8dp"
+        tools:text = "tagggg"/>
 
     <TextView
         android:id="@+id/txtTitle"
         android:textStyle="bold"
+        android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="title"/>
@@ -26,6 +30,7 @@
         android:id="@+id/txtContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="10"
         tools:text="this is a note"/>
 
 </LinearLayout>

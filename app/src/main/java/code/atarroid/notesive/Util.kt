@@ -81,4 +81,21 @@ object ForDb {
     }
 
 
+    suspend fun dbTaggedNotes(cid: Int, fid: Long, dataSource: NoteDao): List<NoteEntry> {
+        lateinit var newnotes: List<NoteEntry>
+        GlobalScope.async {
+            newnotes = dataSource.getTaggedNotes(cid, fid)
+        }.await()
+        return newnotes
+    }
+
+    suspend fun dbGetNotesList(id:Long, dataSource: NoteDao): List<NoteEntry> {
+        lateinit var newnotes: List<NoteEntry>
+        GlobalScope.async {
+            newnotes = dataSource.getNotesList(id)
+        }.await()
+        return newnotes
+    }
+
+
 }

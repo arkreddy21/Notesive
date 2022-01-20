@@ -52,6 +52,7 @@ class NoteRecAdapter(private val dataSource: NoteDao): RecyclerView.Adapter<Note
         }
     }
 
+
 }
 
 

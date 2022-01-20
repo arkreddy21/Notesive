@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/fragment_edit_entry.xml" value="0.24537037037037038" />
-        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/fragment_folders.xml" value="0.12158054711246201" />
-        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/fragment_notes.xml" value="0.2" />
+        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/drawable/rounded_rect.xml" value="0.26205128205128203" />
+        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/chip_item.xml" value="0.12158054711246201" />
+        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/fragment_edit_entry.xml" value="0.4" />
+        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/fragment_folders.xml" value="0.176" />
+        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/fragment_notes.xml" value="0.4" />
+        <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/layout/note_item.xml" value="0.2842465753424658" />
         <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/menu/bottom_app_bar.xml" value="0.22962962962962963" />
         <entry key="..\:/Users/RAMAKRISHNA/AndroidStudioProjects/Notesive/app/src/main/res/menu/contextual_app_bar.xml" value="0.24537037037037038" />
       </map>

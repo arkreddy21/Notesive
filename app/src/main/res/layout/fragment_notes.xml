@@ -21,47 +21,49 @@
                 android:id="@+id/topAppBarNotes"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@color/bg"
                 app:title="@string/app_name"
-                app:menu="@menu/contextual_app_bar"
-                android:background="@color/bg"/>
+                app:titleTextColor="@color/teal_500"
+                app:menu="@menu/contextual_app_bar"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
         <HorizontalScrollView
             android:id="@+id/tagScroller"
-            android:paddingVertical="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/app_bar">
+            android:layout_below="@id/app_bar"
+            android:paddingVertical="4dp">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/tagChipGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleLine="true"
-                app:selectionRequired="true"
                 app:checkedChip="@+id/chipAll"
+                app:selectionRequired="true"
+                app:singleLine="true"
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipAll"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:text=" all "/>
+                    android:text=" all " />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipUntagged"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:text="untagged"/>
+                    android:text="untagged" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/addTag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:chipIcon="@drawable/ic_add"
-                    android:text="add"/>
+                    android:text="add"
+                    app:chipIcon="@drawable/ic_add" />
 
             </com.google.android.material.chip.ChipGroup>
 
@@ -69,10 +71,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/notesRecView"
-            android:layout_below="@id/tagScroller"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            android:layout_below="@id/tagScroller"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </RelativeLayout>
 
     <!--bottom sheet-->

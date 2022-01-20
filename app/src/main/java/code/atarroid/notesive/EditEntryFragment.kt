@@ -95,33 +95,6 @@ class EditEntryFragment : Fragment() {
             tags.observe(viewLifecycleOwner, { it?.let {addChips(it)} })
         }
 
-        /*
-        if(EditEntryFragmentArgs.fromBundle(requireArguments()).noteId != 0L){
-            viewLifecycleOwner.lifecycleScope.launch{
-                //val note = ForDb.getNote(noteId, dataSource)
-                val note = dataSource.getNote(noteId)
-                if(note.parentTagId != -1){binding.tagChipGroup.check(note.parentTagId); Log.i("EditEntry", "old tag tagged")}    //TODO: make this work
-                binding.titleTxt.setText(note.title)
-                binding.noteTxt.setText(note.content)
-            }
-        }*/
-
-        /*
-        val insertDb = { newTitle: String, newContent: String ->
-            viewLifecycleOwner.lifecycleScope.launch {
-                val newNote = NoteEntry(parentFolderId = id)
-                newNote.title = newTitle; newNote.content = newContent
-                dataSource.insertNote(newNote)
-            }
-        }
-
-        binding.btnSave.setOnClickListener { view: View ->
-            val newTitle = binding.titleTxt.text.toString()
-            val newContent = binding.noteTxt.text.toString()
-            //view.findNavController().navigate(R.id.action_editEntryFragment_to_notesFragment)
-            insertDb(newTitle, newContent)
-        }
-         */
 
         binding.addTag.setOnClickListener {
             binding.bottomSheet.visibility = View.VISIBLE
@@ -154,7 +127,7 @@ class EditEntryFragment : Fragment() {
     override fun onStop() {
         newTitle = binding.titleTxt.text.toString()
         newContent = binding.noteTxt.text.toString()
-        newTagId = binding.tagChipGroup.checkedChipId
+        newTagId = if(binding.tagChipGroup.checkedChipId == View.NO_ID) -1 else binding.tagChipGroup.checkedChipId
         Log.i("EditEntry", "title and content Called")
         super.onStop()
     }

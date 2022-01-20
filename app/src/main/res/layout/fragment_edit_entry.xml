@@ -29,8 +29,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
                         app:menu="@menu/contextual_app_bar"
+                        android:background="@color/bg"
                         app:title="@string/app_name"
-                        android:background="@color/bg"/>
+                        app:titleTextColor="@color/teal_500"/>
 
                 </com.google.android.material.appbar.AppBarLayout>
 
@@ -64,20 +65,24 @@
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
                     android:paddingHorizontal="8dp"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
                     android:hint="title"
                     android:background="@drawable/custom_field"
-                    android:inputType="textMultiLine"/>
+                    android:inputType="text"
+                    android:maxLines="1"
+                    tools:text="title of da note"/>
 
                 <EditText
                     android:id="@+id/noteTxt"
-                    android:layout_marginTop="4dp"
-                    android:paddingHorizontal="8dp"
-                    android:paddingBottom="80dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:background="@android:color/transparent"
                     android:hint="note"
-                    android:inputType="textMultiLine"/>
+                    android:inputType="textMultiLine"
+                    android:paddingHorizontal="8dp"
+                    android:paddingBottom="80dp" />
 
                 <Button
                     android:id="@+id/btnSave"
